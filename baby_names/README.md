@@ -1,5 +1,5 @@
 
-This is a quick excersize to learn Python. It's for the online lectures posted by Google Eng Ed. 
+This excersize is based on an assignment for the online lectures posted by Google Eng Ed. 
 
 Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
@@ -21,5 +21,7 @@ Here's what the html looks like in the baby.html files:
 And to learn regular expressions using python. The script will either write a dictionary of girl and boy names with their ranking to a file, or print them out nicely. The usage is as follows: 
 
 [--summaryfile] baby_file_name.html [summary_file_name.txt]
+
+Parameters in brackets are optional.
 
 

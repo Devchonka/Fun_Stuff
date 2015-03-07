@@ -33,6 +33,7 @@ def extract_names(fname):
         html = open(fname, 'rU')
     except IOError:
         print('Cannot open the file. \n')
+        exit(1)
     else:
         with html:
             text = html.read()
@@ -52,8 +53,12 @@ def extract_names(fname):
     return year, names_dict
 
 
-def write_summary_file(sum_fname):
-    print (sum_fname)
+def write_summary_file(sum_fname, names_dict):
+    fo = open(sum_fname, "wb")
+    for iterable in range(len(names_dict['girl'])):
+        fo.write(str(names_dict['rank'][iterable]+' '+ names_dict['boy'][iterable]+' ' +names_dict['girl'][iterable]))
+        fo.write('\n')
+    fo.close()
 
 def print_vals(year, names_dict):
     print(year)
@@ -78,15 +83,20 @@ def main():
     if args[0] == '--summaryfile':
         summary = True
         del args[0]
-        if args[2]:
-            sum_fname = args[2]
-            del args[2]
+        if args[1]:
+            sum_fname = args[1]
+            del args[1]
+        else:
+            sum_fname = 'output.txt'
 
     (year, names_dict) = extract_names(args[0])
 
     if summary:
-        write_summary_file(sum_fname)
+        print ('Writing a summary file of the input html file, parsed to show year, ranking and boy/ girl names :')
+        print ('See file named '), sum_fname, ('for output')
+        write_summary_file(sum_fname, names_dict)
     else:
+        print ('Printing a summary of the input html file, parsed to show year, ranking and boy / girl names :')
         print_vals(year,names_dict)
 
 
