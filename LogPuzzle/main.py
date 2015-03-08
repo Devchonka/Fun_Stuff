@@ -4,13 +4,13 @@ This is my solution to the puzzle for one of Google Python Eng Ed classes.
 Fragments of an imagine are thrown across the web, and the idea of this puzzle is to
 put the pieces together and discover the complete image.
 
-The idea is to learn the urllib module.
+The idea is to learn about the urllib module.
 
 Google's Python Class:
 http://code.google.com/edu/languages/google-python-class/
 
 Logpuzzle exercise
-Given an apache logfile, find the puzzle urls and download the images.
+Given an apache logfile, find the puzzle urls and download the images to reconstruct an original image.
 
 Here's what a puzzle url looks like:
 10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
@@ -18,7 +18,7 @@ Here's what a puzzle url looks like:
 import os
 import re
 import sys
-import urllib
+import urllib.request
 
 
 def read_urls(fname):
@@ -37,10 +37,10 @@ def read_urls(fname):
     else:
         with html:
             text = html.read()
-            puzzle_urls = re.findall('GET\s(\S+/puzzle/\S+)\sHTTP', text)
+            puzzle_urls = list(set(re.findall('GET\s(\S+/puzzle/\S+)\sHTTP', text)))
+            puzzle_urls.sort()
 
-            import pdb
-            pdb.set_trace()
+            puzzle_urls = ['http://code.google.com' + puzzle_urls[i] for i in range(len(puzzle_urls))]
 
     return puzzle_urls
 
@@ -53,7 +53,27 @@ def download_images(img_urls, dest_dir):
     with an img tag to show each local image file.
     Creates the directory if necessary.
     """
-    pass
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+        print('Created new folder for images.')
+    else:
+        print('Adding images to existing folder')
+
+    # retrieve images and download them into newly created folder
+    merged_file = open(os.path.join(dest_dir, 'index.html'), 'w')
+    merged_file.write('<html><body>\n')
+
+    for url in range(len(img_urls)):
+            try:
+                local_name = dest_dir + '/img' + str(url) + '.jpg'
+                urllib.request.urlretrieve(img_urls[url], local_name)
+                print ('Retrieving image #', url)
+                merged_file.write('<img src = "%s"' %(local_name) +">")
+            except ValueError:
+                print('Skipping un-retrievable URL image.')
+
+    merged_file.write('\n</body></html>\n')
+    merged_file.close()
 
 
 def main():
@@ -73,8 +93,7 @@ def main():
     if todir:
         download_images(img_urls, todir)
     else:
-        pass
-        # print ('\n'.join(img_urls))
+        print('\n'.join(img_urls))
 
 
 if __name__ == '__main__':
