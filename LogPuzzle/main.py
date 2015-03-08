@@ -29,18 +29,10 @@ def read_urls(fname):
 
     puzzle_urls = []
 
-    try:
-        html = open(fname, 'rU')
-    except IOError:
-        print('Cannot open the file. \n')
-        exit(1)
-    else:
-        with html:
-            text = html.read()
-            puzzle_urls = list(set(re.findall('GET\s(\S+/puzzle/\S+)\sHTTP', text)))
-            puzzle_urls.sort()
-
-            puzzle_urls = ['http://code.google.com' + puzzle_urls[i] for i in range(len(puzzle_urls))]
+    with open(fname, 'rU') as html:
+        text = html.read()
+        puzzle_urls = sorted(set(re.findall('GET\s(\S+/puzzle/\S+)\sHTTP', text)))
+        puzzle_urls = ['http://code.google.com' + url for url in puzzle_urls]
 
     return puzzle_urls
 
@@ -60,21 +52,18 @@ def download_images(img_urls, dest_dir):
         print('Adding images to existing folder')
 
     # retrieve images and download them into newly created folder
-    merged_file = open(os.path.join(dest_dir, 'index.html'), 'w')
-    merged_file.write('<html><body>\n')
-
-    for url in range(len(img_urls)):
+    with open(os.path.join(dest_dir, 'index.html'), 'w') as merged_file:
+        merged_file.write('<html><body>\n')
+        for counter, url in enumerate(img_urls):
             try:
-                local_name = dest_dir + '/img' + str(url) + '.jpg'
-                urllib.request.urlretrieve(img_urls[url], local_name)
-                print ('Retrieving image #', url)
+                local_name = dest_dir + '/img' + str(counter) + '.jpg'
+                urllib.request.urlretrieve(url, local_name)
+                print('Retrieving image #', counter)
                 merged_file.write('<img src = "%s"' %(local_name) +">")
             except ValueError:
                 print('Skipping un-retrievable URL image.')
 
-    merged_file.write('\n</body></html>\n')
-    merged_file.close()
-
+        merged_file.write('\n</body></html>\n')
 
 def main():
     args = sys.argv[1:]
