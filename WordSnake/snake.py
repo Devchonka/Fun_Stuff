@@ -25,7 +25,3 @@ class Snake(object):
             elif orientation == 'L':
                 print(' ' * (self._charLocationIn2D[0]-len(word)+1)+ word[:0:-1])
                 self._charLocationIn2D[0] -= len(word)-1
-
-
-
-

@@ -1,4 +1,5 @@
-# WordSnake
+# WordSnake : an excersize to create a snaked word object
+# - in retrospect, better to use queue for this
 
 # Note: Ctrl+Shift+F10 runs the function you're currently on
 # Shift+F10 runs the last function you had selected (SUPER USEFUL!)
